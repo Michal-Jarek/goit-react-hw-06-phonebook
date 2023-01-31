@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { nanoid } from 'nanoid';
 
 import Section from './Section/Section';
 import SignForm from './SignForm/SignForm';
 import UserList from './UserList/UserList';
 import Filter from './Filter/Filter';
+import { setFilter } from 'redux/contactsSlice';
+import { useDispatch } from 'react-redux';
+
 
 const INITIAL_CONTACTS = [
   { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
@@ -17,16 +20,11 @@ export const App = () => {
   const [contacts, handleContacts] = useState(
     JSON.parse(localStorage.getItem('Contacts')) || [...INITIAL_CONTACTS]
   );
-  const [filter, setFilter] = useState('');
-
-  useEffect(() => {
-    localStorage.setItem('Contacts', JSON.stringify(contacts));
-  }, [contacts]);
 
   // ********************* Refactored Methods **************
-
+ const dispatch = useDispatch();
   const handleChange = e => {
-    setFilter(e.target.value);
+    dispatch(setFilter(e.target.value));
   };
 
   const handleSubmit = ({ name, number }) => {
@@ -46,24 +44,6 @@ export const App = () => {
     });
     handleContacts([...contactCopy]);
     console.log(`Signed up as: ${name}`);
-  };
-
-  const handleFilter = (filter, array) => {
-    if (filter.length === 0) return contacts;
-    else {
-      const arrayCopy = [];
-      for (let a = 0; a < array.length; a++)
-        if (array[a].name.toLowerCase().indexOf(filter.toLowerCase()) !== -1)
-          arrayCopy.push(array[a]);
-
-      return arrayCopy;
-    }
-  };
-
-  const handleDelete = id => {
-    const contactsCopy = [...contacts];
-
-    handleContacts([...contactsCopy.filter(contact => contact.id !== id)]);
   };
 
   // ********************* End Methods **************
@@ -87,11 +67,8 @@ export const App = () => {
       </Section>
 
       <Section title="Contacts">
-        <UserList
-          array={handleFilter(filter, contacts)}
-          handleDelete={handleDelete}
-        >
-          <Filter filter={filter} handleChange={handleChange} />
+        <UserList>
+          <Filter handleChange={handleChange} />
         </UserList>
       </Section>
     </div>
