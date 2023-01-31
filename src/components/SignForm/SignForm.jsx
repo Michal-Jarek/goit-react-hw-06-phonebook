@@ -1,5 +1,7 @@
-import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from 'redux/contactsSlice';
+import { getContacts } from 'redux/selectors';
 
 import scss from './SignForm.module.scss';
 
@@ -8,33 +10,49 @@ const INITIAL_STATE = {
   number: '',
 };
 
-const SignForm = ({handleSubmit}) => {
-  
-  const [contact, handleContact] = useState({...INITIAL_STATE})  
+const SignForm = () => {
+  const [contact, handleContact] = useState({ ...INITIAL_STATE });
+  const contactArray = useSelector(getContacts);
+  const dispatch = useDispatch();
 
-  // ************ Methods *****************
-const  handleSubmitInside = e => {
-  e.preventDefault();
-  console.log(contact);
-    handleSubmit(contact );
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (
+      contactArray.some(
+        contact => contact.name.toLowerCase() === name.toLowerCase()
+      )
+    ) {
+      alert(`${name} is already in contacts`);
+      reset();
+      return;
+    }
+    dispatch(
+      addContact({
+        name,
+        number,
+      })
+    );
+    console.log(`Signed up as: ${name}`);
     reset();
   };
 
-const handleChange = e => {
-  handleContact({
-    ...contact,
-    [e.target.name]: e.target.value,
-  });
-};
+  // ************ Methods *****************
 
- const reset = () => handleContact({ ...INITIAL_STATE });
+  const handleChange = e => {
+    handleContact({
+      ...contact,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const reset = () => handleContact({ ...INITIAL_STATE });
 
   // ************ End Methods *****************
 
   const { name, number } = contact;
 
   return (
-    <form className={scss.form} onSubmit={handleSubmitInside}>
+    <form className={scss.form} onSubmit={handleSubmit}>
       <label className={scss.label}>
         Name:
         <input
@@ -66,10 +84,6 @@ const handleChange = e => {
       </button>
     </form>
   );
-};
-
-SignForm.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
 };
 
 export default SignForm;

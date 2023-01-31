@@ -1,13 +1,15 @@
-import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFilter } from 'redux/contactsSlice';
 import { filter } from 'redux/selectors';
 
 import scss from './Filter.module.scss';
 
-const Filter = ({ handleChange }) => {
+const Filter = () => {
   let contactFilter = useSelector(filter);
-
-
+  const dispatch = useDispatch();
+  const handleChange = e => {
+    dispatch(setFilter(e.target.value));
+  };
 
   return (
     <label className={scss.label}>
@@ -24,11 +26,6 @@ const Filter = ({ handleChange }) => {
       />
     </label>
   );
-};
-
-Filter.propTypes = {
-  filter: PropTypes.string,
-  handleChange: PropTypes.func,
 };
 
 export default Filter;

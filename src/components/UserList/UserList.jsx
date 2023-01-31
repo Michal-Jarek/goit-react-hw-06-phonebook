@@ -19,7 +19,6 @@ const UserList = ({ children }) => {
       for (let a = 0; a < array.length; a++)
         if (array[a].name.toLowerCase().indexOf(filter.toLowerCase()) !== -1)
           arrayCopy.push(array[a]);
-
       return arrayCopy;
     }
   };
@@ -51,8 +50,6 @@ const UserList = ({ children }) => {
 };
 
 UserList.propTypes = {
-  array: PropTypes.array,
-  handleDelete: PropTypes.func,
   children: PropTypes.element,
 };
 
