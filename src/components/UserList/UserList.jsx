@@ -37,7 +37,7 @@ const UserList = ({ children }) => {
               {name}: {number}
               <button
                 className={scss.button}
-                onClick={() => dispatch(deleteContact())}
+                onClick={() => dispatch(deleteContact(id))}
               >
                 Delete
               </button>
